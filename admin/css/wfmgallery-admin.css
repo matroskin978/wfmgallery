@@ -1,3 +1,11 @@
+.wfmgallery-actions {
+    display: flex;
+}
+
+.wfmgallery-actions a.button {
+    margin-right: 5px;
+}
+
 .wfmgallery-actions .dashicons, .wfmgallery-actions .dashicons-before::before {
     vertical-align: middle;
 }

@@ -34,7 +34,7 @@
 		<?php
 		wp_editor( $content, 'wp_editor', array(
 			'textarea_name' => 'gallery_content',
-			'textarea_rows' => 10,
+			'textarea_rows' => 20,
 			'tinymce'       => array(
 				'toolbar1' => 'undo,redo',
 				'toolbar2' => '',

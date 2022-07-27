@@ -2,6 +2,31 @@
 
     <h1><?php _e( 'Galleries List Page', 'wfmgallery' ) ?></h1>
 
+	<?php
+	if ( isset ( $_GET['id'] ) ) {
+		$id      = (int) $_GET['id'];
+        Wfmgallery_Admin::delete_gallery( $id );
+	}
+	?>
+
+	<?php
+	$errors  = get_transient( 'wfmgallery_form_errors' );
+	$success = get_transient( 'wfmgallery_form_success' );
+	?>
+	<?php if ( $errors ): ?>
+        <div id="setting-error-settings_updated" class="notice notice-error settings-error is-dismissible">
+            <p><strong><?php echo $errors; ?></strong></p>
+        </div>
+		<?php delete_transient( 'wfmgallery_form_errors' ) ?>
+	<?php endif; ?>
+
+	<?php if ( $success ): ?>
+        <div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible">
+            <p><strong><?php echo $success; ?></strong></p>
+        </div>
+		<?php delete_transient( 'wfmgallery_form_success' ) ?>
+	<?php endif; ?>
+
     <!-- Pagination -->
     <div class="pagination">
 		<?php
@@ -50,8 +75,12 @@
                         <a class="button button-secondary"
                            href="<?php echo admin_url( "admin.php?page=wfmgallery-add&id={$gallery['id']}" ) ?>"><span
                                     class="dashicons dashicons-edit"></span></a>
-                        <a class="button button-link-delete"><span class="dashicons dashicons-trash"></span></a>
-
+                        <form action="<?php echo admin_url( 'admin-post.php' ) ?>" method="post">
+	                        <?php wp_nonce_field( 'wfmgallery_action', 'wfmgallery_delete' ) ?>
+                            <input type="hidden" name="action" value="delete_gallery">
+                            <input type="hidden" name="gallery_id" value="<?php echo $gallery['id'] ?>">
+                            <button class="button button-link-delete" type="submit"><span class="dashicons dashicons-trash"></span></button>
+                        </form>
                     </td>
                 </tr>
 			<?php endforeach; ?>

@@ -6,12 +6,30 @@ class Wfmgallery_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts_styles' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_post_save_gallery', array( $this, 'save_gallery' ) );
+		add_action( 'admin_post_delete_gallery', array( $this, 'delete_gallery' ) );
 	}
 
 	public static function get_gallery( $id ) {
 		global $wpdb;
 		$id = (int) $id;
 		return $wpdb->get_results( "SELECT * FROM wfm_gallery WHERE id={$id}", ARRAY_A );
+	}
+
+	public function delete_gallery() {
+		if ( ! isset( $_POST['wfmgallery_delete'] ) || ! wp_verify_nonce( $_POST['wfmgallery_delete'], 'wfmgallery_action' ) ) {
+			wp_die( __( 'Error!', 'wfmgallery' ) );
+		}
+
+		$gallery_id = isset( $_POST['gallery_id'] ) ? (int) $_POST['gallery_id'] : 0;
+
+		global $wpdb;
+		if ( $wpdb->delete( 'wfm_gallery', array( 'id' => $gallery_id ) ) ) {
+			set_transient( 'wfmgallery_form_success', __( 'Gallery deleted successfully', 'wfmgallery' ), 30 );
+		} else {
+			set_transient( 'wfmgallery_form_errors', __( 'Gallery deletion error', 'wfmgallery' ), 30 );
+		}
+		wp_redirect( $_POST['_wp_http_referer'] );
+		exit;
 	}
 
 	public function save_gallery() {
